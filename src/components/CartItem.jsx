@@ -1,10 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { removeFromCart, increaseQuantity, decreaseQuantity } from '../redux/CartSlice';
+import { removeItem, updateQuantity } from '../redux/CartSlice';
 
 function CartItem({ setPage }) {
   const dispatch = useDispatch();
   const items = useSelector(s => s.cart.items);
-  const total = items.reduce((acc, i) => acc + i.price * i.quantity, 0);
+
+  const calculateTotal = () =>
+    items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   if (items.length === 0) {
     return (
@@ -29,12 +31,12 @@ function CartItem({ setPage }) {
               <p>Unit Price: <strong>${item.price.toFixed(2)}</strong></p>
               <p>Item Total: <strong>${(item.price * item.quantity).toFixed(2)}</strong></p>
               <div className="qty-controls">
-                <button onClick={() => dispatch(decreaseQuantity(item.id))}>−</button>
+                <button onClick={() => dispatch(updateQuantity({ id: item.id, quantity: item.quantity - 1 }))}>−</button>
                 <span>{item.quantity}</span>
-                <button onClick={() => dispatch(increaseQuantity(item.id))}>+</button>
+                <button onClick={() => dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1 }))}>+</button>
               </div>
             </div>
-            <button className="remove-btn" onClick={() => dispatch(removeFromCart(item.id))}>
+            <button className="remove-btn" onClick={() => dispatch(removeItem(item.id))}>
               🗑 Remove
             </button>
           </div>
@@ -42,7 +44,7 @@ function CartItem({ setPage }) {
       </div>
 
       <div className="cart-summary">
-        <h2>Total: <span>${total.toFixed(2)}</span></h2>
+        <h2>Total: <span>${calculateTotal().toFixed(2)}</span></h2>
         <div className="cart-actions">
           <button className="secondary-btn" onClick={() => setPage('products')}>
             ← Continue Shopping

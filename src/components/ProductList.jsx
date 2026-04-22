@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addToCart } from '../redux/CartSlice';
+import { addItem } from '../redux/CartSlice';
 
 const PLANTS = {
   Indoor: [
@@ -41,7 +41,7 @@ function PlantCard({ plant }) {
         <p className="price">${plant.price.toFixed(2)}</p>
         <button
           className={`add-btn ${inCart ? 'disabled' : ''}`}
-          onClick={() => dispatch(addToCart(plant))}
+          onClick={() => dispatch(addItem(plant))}
           disabled={inCart}
         >
           {inCart ? '✓ Added' : 'Add to Cart'}
